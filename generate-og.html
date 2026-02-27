@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>OG Image Generator</title></head>
+<body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh">
+<canvas id="c" width="1200" height="630"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Background
+const bg = ctx.createLinearGradient(0, 0, 1200, 630);
+bg.addColorStop(0, '#0f0f13');
+bg.addColorStop(0.5, '#1a1a2e');
+bg.addColorStop(1, '#0f0f13');
+ctx.fillStyle = bg;
+ctx.fillRect(0, 0, 1200, 630);
+
+// Accent glow
+const glow = ctx.createRadialGradient(600, 300, 0, 600, 300, 500);
+glow.addColorStop(0, 'rgba(124,106,239,0.15)');
+glow.addColorStop(1, 'transparent');
+ctx.fillStyle = glow;
+ctx.fillRect(0, 0, 1200, 630);
+
+// Grid pattern
+ctx.strokeStyle = 'rgba(124,106,239,0.05)';
+ctx.lineWidth = 1;
+for (let x = 0; x < 1200; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 630); ctx.stroke(); }
+for (let y = 0; y < 630; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
+
+// Title
+ctx.textAlign = 'center';
+ctx.fillStyle = '#a78bfa';
+ctx.font = 'bold 64px "Segoe UI", system-ui, sans-serif';
+ctx.fillText('Claude Code', 600, 220);
+
+const titleGrad = ctx.createLinearGradient(200, 270, 1000, 330);
+titleGrad.addColorStop(0, '#a78bfa');
+titleGrad.addColorStop(1, '#34d399');
+ctx.fillStyle = titleGrad;
+ctx.font = 'bold 72px "Segoe UI", system-ui, sans-serif';
+ctx.fillText('開發加速指南', 600, 310);
+
+// Subtitle
+ctx.fillStyle = '#a8a6b8';
+ctx.font = '28px "Segoe UI", system-ui, sans-serif';
+ctx.fillText('從入門到高效 — 一站學會所有技巧', 600, 380);
+
+// Badges
+const badges = ['5 Slash Commands', '3 Custom Skills', '1 Agent', '20+ 文章'];
+const colors = ['#34d399', '#7c6aef', '#fbbf24', '#60a5fa'];
+const badgeY = 460;
+const totalWidth = badges.length * 185;
+const startX = (1200 - totalWidth) / 2 + 92;
+
+badges.forEach((text, i) => {
+  const x = startX + i * 185;
+  // Badge bg
+  ctx.fillStyle = 'rgba(34,34,58,0.8)';
+  ctx.beginPath();
+  ctx.roundRect(x - 82, badgeY - 18, 164, 36, 18);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(42,42,69,0.8)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Dot
+  ctx.fillStyle = colors[i];
+  ctx.beginPath();
+  ctx.arc(x - 62, badgeY, 5, 0, Math.PI * 2);
+  ctx.fill();
+  // Text
+  ctx.fillStyle = '#a8a6b8';
+  ctx.font = '16px "Segoe UI", system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x + 8, badgeY + 6);
+});
+
+// Author
+ctx.fillStyle = '#6e6c82';
+ctx.font = '20px "Segoe UI", system-ui, sans-serif';
+ctx.textAlign = 'center';
+ctx.fillText('by @chia.hsun301 — 彙整自 Anthropic 官方文件 + 實戰經驗', 600, 560);
+
+// Border
+ctx.strokeStyle = 'rgba(124,106,239,0.2)';
+ctx.lineWidth = 2;
+ctx.strokeRect(1, 1, 1198, 628);
+
+// Download
+const link = document.createElement('a');
+link.download = 'og-image.png';
+link.href = c.toDataURL('image/png');
+link.click();
+document.body.innerHTML = '<div style="color:#a78bfa;font-size:24px;text-align:center;padding:40px">og-image.png 已自動下載!<br><br><img src="' + c.toDataURL() + '" style="max-width:90%;border-radius:12px;border:1px solid #333"></div>';
+</script>
+</body>
+</html>

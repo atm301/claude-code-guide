@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 開發加速指南 — 從入門到高效</title>
+<meta name="description" content="彙整 Superpowers Skills、進階技巧、工作流優化、自訂指令等 Claude Code 完整學習資源">
+<meta property="og:title" content="Claude Code 開發加速指南">
+<meta property="og:description" content="從 Superpowers 安裝到工作流優化，一站學會 Claude Code 所有技巧">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Claude Code 開發加速指南">
+<meta name="twitter:description" content="5 Slash Commands + 3 Skills + 1 Agent + 20 篇文章彙整">
+<meta name="twitter:image" content="og-image.png">
+
+<!-- JSON-LD 結構化資料 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Claude Code 開發加速指南 — 從入門到高效",
+  "description": "彙整 Superpowers Skills、進階技巧、工作流優化、自訂指令等 Claude Code 完整學習資源",
+  "author": { "@type": "Person", "name": "何佳勳", "url": "https://github.com/atm301" },
+  "datePublished": "2026-02-27",
+  "dateModified": "2026-02-27",
+  "publisher": { "@type": "Person", "name": "何佳勳" },
+  "mainEntityOfPage": { "@type": "WebPage" },
+  "keywords": ["Claude Code", "Superpowers", "Skills", "Vibe Coding", "AI 開發", "工作流優化"],
+  "inLanguage": "zh-TW",
+  "articleSection": ["Superpowers", "Skills", "CLAUDE.md", "Context 管理", "Plan Mode", "Hooks", "Slash Commands", "MCP", "工作流", "加速策略"]
+}
+</script>
+
+<!-- GA4 — 替換 G-XXXXXXXXXX 為你的 GA4 測量 ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
+// 章節閱讀追蹤 + 轉換事件
+const trackedSections=new Set();
+function trackSection(id){
+  if(!trackedSections.has(id)){
+    trackedSections.add(id);
+    gtag('event','section_view',{section_id:id});
+    // 瀏覽 3+ 章節 = 深度閱讀轉換
+    if(trackedSections.size===3){
+      gtag('event','deep_reader',{sections_count:3,sections:Array.from(trackedSections).join(',')});
+    }
+    // 瀏覽 6+ 章節 = 超級讀者
+    if(trackedSections.size===6){
+      gtag('event','super_reader',{sections_count:6});
+    }
+  }
+}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f13;--surface:#1a1a24;--surface2:#22223a;--surface3:#2a2a45;
+  --text:#e8e6f0;--text2:#a8a6b8;--text3:#6e6c82;
+  --accent:#7c6aef;--accent2:#a78bfa;--accent-glow:rgba(124,106,239,.15);
+  --green:#34d399;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;
+  --radius:12px;--radius-lg:20px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+
+/* Layout */
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+
+/* Hero */
+.hero{padding:80px 0 60px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,var(--accent-glow) 0%,transparent 60%);animation:pulse 8s ease-in-out infinite alternate}
+@keyframes pulse{0%{opacity:.4;transform:scale(1)}100%{opacity:.7;transform:scale(1.1)}}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,var(--accent2),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;margin-bottom:16px}
+.hero .subtitle{font-size:clamp(1rem,2.5vw,1.25rem);color:var(--text2);max-width:600px;margin:0 auto 32px;position:relative}
+.hero .badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--surface2);border:1px solid var(--surface3);border-radius:20px;font-size:.85rem;color:var(--text2)}
+.badge .dot{width:8px;height:8px;border-radius:50%}
+.dot-green{background:var(--green)}.dot-purple{background:var(--accent)}.dot-yellow{background:var(--yellow)}.dot-blue{background:var(--blue)}
+
+/* Nav */
+.nav-bar{position:sticky;top:0;z-index:100;background:rgba(15,15,19,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--surface2);padding:12px 0}
+.nav-inner{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:0 24px}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-link{white-space:nowrap;padding:8px 16px;border-radius:8px;font-size:.85rem;color:var(--text2);text-decoration:none;transition:all .2s;flex-shrink:0}
+.nav-link:hover,.nav-link.active{background:var(--accent-glow);color:var(--accent2)}
+
+/* Sections */
+section{padding:60px 0 40px}
+section+section{border-top:1px solid var(--surface2)}
+.section-label{display:inline-block;padding:4px 12px;background:var(--accent-glow);border:1px solid rgba(124,106,239,.3);border-radius:6px;font-size:.75rem;font-weight:600;color:var(--accent2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px}
+.section-title{font-size:clamp(1.5rem,3.5vw,2rem);font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.section-desc{color:var(--text2);margin-bottom:32px;max-width:700px}
+
+/* Cards */
+.card-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);padding:20px;transition:all .25s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,106,239,.1)}
+.card-icon{font-size:1.5rem;margin-bottom:8px}
+.card h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
+.card p{font-size:.88rem;color:var(--text2);line-height:1.6}
+.card .tag{display:inline-block;padding:2px 8px;background:var(--surface3);border-radius:4px;font-size:.75rem;color:var(--text3);margin-top:8px}
+
+/* Table */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);border:1px solid var(--surface2)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+thead{background:var(--surface2)}
+th{padding:12px 16px;text-align:left;font-weight:600;font-size:.82rem;color:var(--text2);letter-spacing:.03em}
+td{padding:10px 16px;border-top:1px solid var(--surface2)}
+tr:hover td{background:rgba(124,106,239,.04)}
+
+/* Code */
+.code-block{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);padding:16px 20px;font-family:'Cascadia Code','Fira Code',monospace;font-size:.85rem;line-height:1.6;overflow-x:auto;margin:16px 0;position:relative}
+.code-block .lang{position:absolute;top:8px;right:12px;font-size:.7rem;color:var(--text3);text-transform:uppercase}
+code{font-family:'Cascadia Code','Fira Code',monospace;background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.85rem}
+.code-block code{background:none;padding:0}
+.comment{color:var(--text3)}
+.keyword{color:var(--accent2)}
+.string{color:var(--green)}
+.fn{color:var(--blue)}
+
+/* Accordion */
+.accordion{border:1px solid var(--surface2);border-radius:var(--radius);overflow:hidden;margin:12px 0}
+.accordion-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--surface);cursor:pointer;user-select:none;transition:background .2s}
+.accordion-header:hover{background:var(--surface2)}
+.accordion-header h3{font-size:.95rem;font-weight:600}
+.accordion-arrow{transition:transform .3s;color:var(--text3)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.accordion-body.open{max-height:5000px}
+.accordion-content{padding:16px 20px;border-top:1px solid var(--surface2)}
+
+/* Steps */
+.steps{counter-reset:step}
+.step{position:relative;padding-left:48px;margin-bottom:24px;counter-increment:step}
+.step::before{content:counter(step);position:absolute;left:0;top:0;width:32px;height:32px;background:var(--accent-glow);border:1px solid rgba(124,106,239,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--accent2)}
+.step h4{font-weight:600;margin-bottom:4px}
+.step p{font-size:.9rem;color:var(--text2)}
+
+/* Tips */
+.tip-box{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:16px 0;font-size:.9rem}
+.tip-box.green{border-left-color:var(--green)}
+.tip-box.yellow{border-left-color:var(--yellow)}
+.tip-box.red{border-left-color:var(--red)}
+.tip-box strong{display:block;margin-bottom:4px}
+
+/* Workflow diagram */
+.workflow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0;padding:20px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--surface2)}
+.wf-step{padding:10px 18px;background:var(--surface2);border-radius:8px;font-weight:600;font-size:.88rem;white-space:nowrap}
+.wf-step.highlight{background:var(--accent-glow);border:1px solid rgba(124,106,239,.3);color:var(--accent2)}
+.wf-arrow{color:var(--text3);font-size:1.2rem}
+
+/* Star rating */
+.stars{color:var(--yellow);letter-spacing:1px}
+
+/* Footer */
+footer{padding:40px 0;text-align:center;border-top:1px solid var(--surface2);color:var(--text3);font-size:.85rem}
+footer a{color:var(--accent2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:0 16px}
+  section{padding:40px 0 30px}
+  .hero{padding:60px 0 40px}
+  .card-grid{grid-template-columns:1fr}
+  .nav-link{padding:6px 12px;font-size:.8rem}
+  .workflow{flex-direction:column;align-items:stretch;text-align:center}
+  .wf-arrow{transform:rotate(90deg)}
+}
+
+/* Smooth reveal */
+.reveal{opacity:0;transform:translateY(20px);transition:all .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Light theme */
+[data-theme="light"]{
+  --bg:#f8f8fc;--surface:#ffffff;--surface2:#eeeef5;--surface3:#dddde8;
+  --text:#1a1a2e;--text2:#555570;--text3:#8888a0;
+  --accent:#5b4bd5;--accent2:#6d5ce7;--accent-glow:rgba(91,75,213,.1);
+}
+[data-theme="light"] .hero::before{background:radial-gradient(ellipse at center,rgba(91,75,213,.08) 0%,transparent 60%)}
+[data-theme="light"] .nav-bar{background:rgba(248,248,252,.9)}
+[data-theme="light"] .code-block{background:#f0f0f8;border-color:#dddde8}
+[data-theme="light"] code{background:#eeeef5}
+[data-theme="light"] .code-block code{background:none}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:#ccc}
+
+/* Theme toggle */
+.theme-toggle{width:36px;height:36px;border:1px solid var(--surface3);border-radius:8px;background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .2s;flex-shrink:0}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* Search modal */
+.search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:min(20vh,160px)}
+.search-overlay.open{display:flex}
+.search-box{width:min(600px,90vw);background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:searchIn .2s ease}
+@keyframes searchIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.search-input-wrap{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--surface2)}
+.search-input-wrap svg{flex-shrink:0;color:var(--text3)}
+.search-input{flex:1;background:none;border:none;outline:none;font-size:1rem;color:var(--text);font-family:inherit}
+.search-input::placeholder{color:var(--text3)}
+.search-kbd{font-size:.7rem;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:4px;white-space:nowrap}
+.search-results{max-height:360px;overflow-y:auto;padding:8px}
+.search-results:empty::after{content:'輸入關鍵字搜尋章節...';display:block;padding:20px;text-align:center;color:var(--text3);font-size:.9rem}
+.search-result{display:block;padding:12px 16px;border-radius:8px;text-decoration:none;color:var(--text);transition:background .15s;cursor:pointer}
+.search-result:hover,.search-result.active{background:var(--accent-glow)}
+.search-result-label{font-size:.7rem;color:var(--accent2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.search-result-title{font-weight:600;font-size:.95rem}
+.search-result-desc{font-size:.82rem;color:var(--text2);margin-top:2px}
+.search-no-result{padding:24px;text-align:center;color:var(--text3);font-size:.9rem}
+
+/* Copy button on code blocks */
+.code-block{position:relative}
+.copy-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:var(--surface2);border:1px solid var(--surface3);border-radius:6px;color:var(--text3);font-size:.72rem;cursor:pointer;opacity:0;transition:all .2s;font-family:inherit;z-index:1}
+.code-block:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent)}
+.copy-btn.copied{background:rgba(52,211,153,.15);color:var(--green);border-color:var(--green)}
+
+/* Search trigger in nav */
+.search-trigger{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:8px;border:1px solid var(--surface3);background:var(--surface);color:var(--text3);cursor:pointer;font-size:.82rem;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.search-trigger:hover{border-color:var(--accent);color:var(--accent2)}
+.search-trigger kbd{font-size:.7rem;background:var(--surface2);padding:1px 6px;border-radius:3px}
+
+/* Back to top */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(12px);transition:all .3s;z-index:90;box-shadow:0 4px 16px rgba(124,106,239,.3)}
+.back-to-top.visible{opacity:1;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,106,239,.4)}
+
+/* Offline banner */
+.offline-banner{position:fixed;bottom:0;left:0;right:0;background:var(--yellow);color:#1a1a2e;text-align:center;padding:8px;font-size:.85rem;font-weight:600;z-index:300;transform:translateY(100%);transition:transform .3s}
+.offline-banner.show{transform:translateY(0)}
+
+/* Search history */
+.search-history{padding:8px 16px}
+.search-history-title{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.search-history-list{display:flex;flex-wrap:wrap;gap:6px}
+.search-history-item{padding:4px 12px;background:var(--surface2);border:1px solid var(--surface3);border-radius:16px;font-size:.8rem;color:var(--text2);cursor:pointer;transition:all .15s}
+.search-history-item:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* Print */
+@media print{
+  .nav-bar,.hero::before,.search-overlay,.theme-toggle,.copy-btn,.search-trigger,.back-to-top,.offline-banner{display:none}
+  body{background:#fff;color:#000}
+  .card,.code-block,.accordion,.tip-box{border-color:#ddd}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <h1>Claude Code 開發加速指南</h1>
+    <p class="subtitle">從 Superpowers 安裝到工作流優化，一站學會所有技巧</p>
+    <div class="badge-row">
+      <span class="badge"><span class="dot dot-green"></span>5 Slash Commands</span>
+      <span class="badge"><span class="dot dot-purple"></span>3 Custom Skills</span>
+      <span class="badge"><span class="dot dot-yellow"></span>1 Agent</span>
+      <span class="badge"><span class="dot dot-blue"></span>20+ 文章彙整</span>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <button class="search-trigger" onclick="openSearch()" aria-label="搜尋"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>搜尋 <kbd>Ctrl+K</kbd></button>
+    <a class="nav-link" href="#superpowers">Superpowers</a>
+    <a class="nav-link" href="#skills">Skills 清單</a>
+    <a class="nav-link" href="#claudemd">CLAUDE.md</a>
+    <a class="nav-link" href="#context">Context 管理</a>
+    <a class="nav-link" href="#plan">Plan Mode</a>
+    <a class="nav-link" href="#hooks">Hooks</a>
+    <a class="nav-link" href="#commands">Slash Commands</a>
+    <a class="nav-link" href="#custom-skills">自訂 Skills</a>
+    <a class="nav-link" href="#mcp">MCP</a>
+    <a class="nav-link" href="#workflow">工作流</a>
+    <a class="nav-link" href="#strategy">加速策略</a>
+    <a class="nav-link" href="#resources">資源</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="切換主題" title="切換亮色/暗色主題">🌙</button>
+  </div>
+</nav>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="搜尋章節、指令、技巧..." autocomplete="off">
+      <span class="search-kbd">ESC 關閉</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<main>
+
+<!-- 1. Superpowers -->
+<section id="superpowers">
+<div class="container reveal">
+  <span class="section-label">入門</span>
+  <h2 class="section-title">Superpowers — AI 的員工手冊</h2>
+  <p class="section-desc">一套給 AI 看的工作流規範（不是軟體或函式庫），包含 14 個 Skills，從需求釐清到分支合併都有對應規範。</p>
+
+  <h3 style="margin-bottom:16px;font-size:1.1rem">安裝步驟</h3>
+  <div class="steps">
+    <div class="step">
+      <h4>開啟終端機</h4>
+      <p>VSCode 按 <code>Ctrl + `</code>，或開啟 Windows Terminal / Git Bash</p>
+    </div>
+    <div class="step">
+      <h4>啟動 Claude Code</h4>
+      <p>輸入 <code>claude</code>，等出現 <code>&gt;</code> 提示符號</p>
+    </div>
+    <div class="step">
+      <h4>註冊 Marketplace</h4>
+      <div class="code-block"><code>/plugin marketplace add obra/superpowers-marketplace</code></div>
+    </div>
+    <div class="step">
+      <h4>安裝 Superpowers</h4>
+      <div class="code-block"><code>/plugin install superpowers@superpowers-marketplace</code></div>
+    </div>
+    <div class="step">
+      <h4>驗證</h4>
+      <p>關閉 session → 重新啟動 <code>claude</code> → 說「幫我規劃一個新功能」。如果 AI 開始問問題（而不是直接動工），就代表已生效。</p>
+    </div>
+  </div>
+
+  <div class="tip-box green">
+    <strong>更新指令</strong>
+    <code>/plugin update superpowers</code>
+  </div>
+</div>
+</section>
+
+<!-- 2. Skills 清單 -->
+<section id="skills">
+<div class="container reveal">
+  <span class="section-label">核心</span>
+  <h2 class="section-title">14 個 Skills 完整清單</h2>
+  <p class="section-desc">依執行順序排列，星級代表推薦程度</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>Skill</th><th>用途</th><th>推薦</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>brainstorming</strong></td><td>蘇格拉底式提問釐清需求，一次一問題</td><td class="stars">★★★★★</td></tr>
+      <tr><td>2</td><td><strong>using-git-worktrees</strong></td><td>建立隔離的 git worktree 工作環境</td><td class="stars">★★★☆☆</td></tr>
+      <tr><td>3</td><td><strong>writing-plans</strong></td><td>把設計拆成 2~5 分鐘的小步驟</td><td class="stars">★★★★★</td></tr>
+      <tr><td>4</td><td><strong>subagent-driven-development</strong></td><td>每個任務派 subagent + 兩階段審查</td><td class="stars">★★★☆☆</td></tr>
+      <tr><td>5</td><td><strong>executing-plans</strong></td><td>批次執行計畫，帶人類檢查點</td><td class="stars">★★★★☆</td></tr>
+      <tr><td>6</td><td><strong>test-driven-development</strong></td><td>嚴格 TDD：紅-綠-重構循環</td><td class="stars">★★★★☆</td></tr>
+      <tr><td>7</td><td><strong>systematic-debugging</strong></td><td>四階段系統性除錯（根因→模式→假說→修復）</td><td class="stars">★★★★★</td></tr>
+      <tr><td>8</td><td><strong>verification-before-completion</strong></td><td>說「完成」前必須跑驗證</td><td class="stars">★★★★★</td></tr>
+      <tr><td>9</td><td><strong>requesting-code-review</strong></td><td>提交 code review 前的檢查清單</td><td class="stars">★★★☆☆</td></tr>
+      <tr><td>10</td><td><strong>receiving-code-review</strong></td><td>收到審查意見後的正確回應方式</td><td class="stars">★★★☆☆</td></tr>
+      <tr><td>11</td><td><strong>finishing-a-development-branch</strong></td><td>完成分支：merge / PR / 保留 / 丟棄</td><td class="stars">★★★☆☆</td></tr>
+      <tr><td>12</td><td><strong>dispatching-parallel-agents</strong></td><td>併發 subagent 工作流</td><td class="stars">★★☆☆☆</td></tr>
+      <tr><td>13</td><td><strong>writing-skills</strong></td><td>如何撰寫新的 skill（meta skill）</td><td class="stars">★★☆☆☆</td></tr>
+      <tr><td>14</td><td><strong>using-superpowers</strong></td><td>入門介紹 skill（自動注入）</td><td class="stars">★★★★★</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1.1rem">優先使用建議</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>日常必備</h3>
+      <p><strong>brainstorming</strong> — 避免 AI 沒搞清需求就動工<br>
+         <strong>systematic-debugging</strong> — 抓 bug 不瞎猜<br>
+         <strong>verification-before-completion</strong> — 防止假完成</p>
+      <span class="tag">每次都用</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <h3>進階品質</h3>
+      <p><strong>writing-plans</strong> — 大功能先拆步驟<br>
+         <strong>test-driven-development</strong> — 核心邏輯用 TDD<br>
+         <strong>executing-plans</strong> — 搭配 writing-plans</p>
+      <span class="tag">大功能才用</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">💡</div>
+      <h3>不急著用</h3>
+      <p><strong>subagent-driven-development</strong> — Token 消耗大<br>
+         <strong>using-git-worktrees</strong> — 多分支並行<br>
+         <strong>dispatching-parallel-agents</strong> — 企業級</p>
+      <span class="tag">大型專案</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 3. CLAUDE.md -->
+<section id="claudemd">
+<div class="container reveal">
+  <span class="section-label">設定</span>
+  <h2 class="section-title">CLAUDE.md 全域設定</h2>
+  <p class="section-desc">三層架構：全域 → 專案 → 本地，每一行都問自己「拿掉會不會讓 Claude 犯錯？」不會就刪。</p>
+
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+    <div class="card">
+      <h3>全域</h3>
+      <p><code>~/.claude/CLAUDE.md</code><br>所有專案通用的規則</p>
+    </div>
+    <div class="card">
+      <h3>專案</h3>
+      <p><code>./CLAUDE.md</code><br>專案特定規則（進 git）</p>
+    </div>
+    <div class="card">
+      <h3>本地</h3>
+      <p><code>.claude/CLAUDE.md</code><br>個人覆蓋（不進 git）</p>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 12px;font-size:1rem">推薦的全域設定</h3>
+  <div class="code-block">
+    <span class="lang">markdown</span>
+<code><span class="comment"># Global Preferences</span>
+
+<span class="comment">## 溝通語言</span>
+- 使用繁體中文
+
+<span class="comment">## 開發習慣</span>
+- 每次任務完成後，提供 4 面向 × 3 建議的優化方案（共 12 項）
+  - <span class="keyword">用戶端</span>（End User）：使用者體驗、互動設計、易用性
+  - <span class="keyword">開發端</span>（Developer）：程式碼品質、可維護性、測試、效能
+  - <span class="keyword">商業端</span>（Business）：成長指標、分享傳播、數據追蹤
+  - <span class="keyword">AI 延伸</span>（Insight）：自選面向（安全性、SEO、架構演進等）
+
+<span class="comment">## Context 管理</span>
+- 超過 30 次交流時主動建議 /compact
+- 壓縮時保留：已修改檔案清單、測試指令、關鍵決策
+
+<span class="comment">## 開發紀律</span>
+- 大功能先規劃再動手
+- 說「完成」前必須實際跑驗證
+- Debug 不瞎猜，先追根因；修 3 次沒好就質疑架構
+
+<span class="comment">## 程式碼風格</span>
+- 偏好簡潔，避免過度設計（YAGNI）
+- 避免過早抽象化，3 行重複好過不成熟的抽象</code>
+  </div>
+
+  <div class="tip-box yellow">
+    <strong>核心原則</strong>
+    全域 CLAUDE.md 保持 < 150 行。能用工具自動化的（格式化、型別檢查）不要寫在 CLAUDE.md。
+  </div>
+</div>
+</section>
+
+<!-- 4. Context 管理 -->
+<section id="context">
+<div class="container reveal">
+  <span class="section-label">效率</span>
+  <h2 class="section-title">Context 管理與 Session 策略</h2>
+  <p class="section-desc">200K tokens 的 context window，善用會讓開發效率翻倍。</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>指令</th><th>用途</th><th>何時用</th></tr></thead>
+    <tbody>
+      <tr><td><code>/clear</code></td><td>完全清除對話，保留 CLAUDE.md</td><td>切換到不相關的任務</td></tr>
+      <tr><td><code>/compact</code></td><td>智慧壓縮，保留關鍵資訊</td><td>超過 30 次交流</td></tr>
+      <tr><td><code>/compact &lt;指示&gt;</code></td><td>帶指引的壓縮</td><td>Focus on the API changes</td></tr>
+      <tr><td><code>/context</code></td><td>查看目前 context 用量</td><td>隨時監控</td></tr>
+      <tr><td><code>/resume</code></td><td>恢復之前的 session</td><td>切換不同對話</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 style="margin:24px 0 12px;font-size:1rem">30 分鐘 Sprint 法</h3>
+  <div class="code-block">
+<code>Sprint 1: 功能 A (20min) → /compact 總結
+Sprint 2: 功能 B (20min) → /compact 總結
+Sprint 3: 測試   (20min) → /clear 結束
+
+<span class="comment">多 Session 策略：</span>
+Terminal 1 → 後端 API
+Terminal 2 → 前端 UI
+Terminal 3 → 測試
+<span class="comment">（各自維持專門的 context，不互相污染）</span></code>
+  </div>
+
+  <div class="tip-box">
+    <strong>避免浪費 Context</strong>
+    不要貼整份 log → 只貼關鍵錯誤。讀檔指定行數 → 不要讀整份大檔。截圖驗證 → 最高 CP 值做法。
+  </div>
+</div>
+</section>
+
+<!-- 5. Plan Mode -->
+<section id="plan">
+<div class="container reveal">
+  <span class="section-label">架構</span>
+  <h2 class="section-title">Plan Mode 架構師模式</h2>
+  <p class="section-desc">35 分鐘的 trial-and-error → 12 分鐘的 plan-then-execute</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>按鍵</th><th>模式</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>預設</td><td><strong>Edit Mode</strong></td><td>一般模式，會讀寫檔案</td></tr>
+      <tr><td><code>Shift+Tab</code> × 1</td><td><strong>Auto-Accept</strong></td><td>自動同意所有操作</td></tr>
+      <tr><td><code>Shift+Tab</code> × 2</td><td><strong>Plan Mode</strong></td><td>唯讀，只能分析不能改檔案</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="workflow">
+    <div class="wf-step">Shift+Tab ×2</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Claude 唯讀分析</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step">你確認計畫</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step">Shift+Tab 回 Edit</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Claude 執行計畫</div>
+  </div>
+
+  <div class="tip-box green">
+    <strong>什麼時候用？</strong>
+    大功能一定要先 plan，小改動可以直接做。Plan Mode 消耗的 tokens 比「寫了改、改了刪」少很多。
+  </div>
+</div>
+</section>
+
+<!-- 6. Hooks -->
+<section id="hooks">
+<div class="container reveal">
+  <span class="section-label">自動化</span>
+  <h2 class="section-title">Hooks 自動化工作流</h2>
+  <p class="section-desc">在 Claude Code 特定事件發生時自動執行的腳本</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Event</th><th>觸發時機</th><th>常見用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>SessionStart</code></td><td>對話開始/恢復/清除</td><td>注入 context、載入 skill</td></tr>
+      <tr><td><code>PreToolUse</code></td><td>工具執行前</td><td>權限檢查、阻擋危險操作</td></tr>
+      <tr><td><code>PostToolUse</code></td><td>工具執行後</td><td>自動格式化、自動 lint</td></tr>
+      <tr><td><code>Notification</code></td><td>Claude 發通知時</td><td>發 Slack / Windows 通知</td></tr>
+      <tr><td><code>Stop</code></td><td>Claude 完成回應時</td><td>自動跑測試、生成報告</td></tr>
+      <tr><td><code>UserPromptSubmit</code></td><td>用戶送出訊息時</td><td>預處理、驗證</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>自動格式化範例（PostToolUse）</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-content">
+        <div class="code-block"><span class="lang">json</span>
+<code>{
+  "<span class="keyword">hooks</span>": {
+    "<span class="keyword">PostToolUse</span>": [{
+      "<span class="string">matcher</span>": "Edit|Write",
+      "<span class="string">hooks</span>": [{
+        "type": "command",
+        "command": "prettier --write $CLAUDE_FILE_PATH",
+        "async": true
+      }]
+    }]
+  }
+}</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>Windows 完成通知範例（Notification）</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-content">
+        <div class="code-block"><span class="lang">json</span>
+<code>{
+  "<span class="keyword">hooks</span>": {
+    "<span class="keyword">Notification</span>": [{
+      "<span class="string">matcher</span>": "",
+      "<span class="string">hooks</span>": [{
+        "type": "command",
+        "command": "powershell.exe -Command \"[System.Windows.Forms.MessageBox]::Show('Claude 完成了！')\"",
+        "timeout": 10000
+      }]
+    }]
+  }
+}</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 7. Slash Commands -->
+<section id="commands">
+<div class="container reveal">
+  <span class="section-label">效率</span>
+  <h2 class="section-title">自訂 Slash Commands</h2>
+  <p class="section-desc">在 <code>~/.claude/commands/</code> 建立 <code>.md</code> 檔案，檔名即指令名。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>/catchup</h3>
+      <p>快速了解目前進度 — 讀取 git log、git diff、分支狀態，整理成進度報告</p>
+      <span class="tag">日常</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>/review</h3>
+      <p>Code Review — 檢查安全性、效能、相容性、Supabase 使用，用表格列出問題和嚴重度</p>
+      <span class="tag">品質</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📸</div>
+      <h3>/screenshot-check</h3>
+      <p>Playwright 截圖驗證 — 手機版（375px）+ 桌面版（1280px），檢查 UI 和 console 錯誤</p>
+      <span class="tag">驗證</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <h3>/deploy</h3>
+      <p>部署前檢查 — 敏感檔案、console.log、API key、外部連結，通過後自動 push</p>
+      <span class="tag">部署</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎮</div>
+      <h3>/game-test</h3>
+      <p>遊戲快速測試 — Playwright 開啟、狀態驗證、互動測試、Console 檢查、截圖回報</p>
+      <span class="tag">測試</span>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>使用方式</strong>
+    在 Claude Code 的 <code>&gt;</code> 提示符號中輸入 <code>/catchup</code>、<code>/review</code> 等即可。支援 <code>$ARGUMENTS</code> 傳參數，如 <code>/game-test sheep-match/index.html</code>
+  </div>
+</div>
+</section>
+
+<!-- 8. Custom Skills -->
+<section id="custom-skills">
+<div class="container reveal">
+  <span class="section-label">專業</span>
+  <h2 class="section-title">自訂 Skills & Agent</h2>
+  <p class="section-desc">Skills 放在 <code>~/.claude/skills/*/SKILL.md</code>，Claude 會根據任務自動載入對應 Skill。</p>
+
+  <div class="card-grid">
+    <div class="card" style="border-color:var(--accent)">
+      <div class="card-icon">🎮</div>
+      <h3>frontend-game-dev</h3>
+      <p>前端遊戲開發通用規範 — 支援單頁 HTML 和模組化多檔案。涵蓋手機優先、視覺素材、測試 Hook、Supabase 整合、效能、無障礙、引導、離線、分享、數據、CTA。</p>
+      <span class="tag">核心 Skill</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗄️</div>
+      <h3>supabase-pattern</h3>
+      <p>Supabase 開發標準模式 — localStorage fallback、upsert 防呆、RLS 安全、Schema 管理、超時處理。含常用讀寫範例程式碼。</p>
+      <span class="tag">後端</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>threads-posting</h3>
+      <p>Threads 自動發文系統 — Node.js + Gemini API、行銷人風格人設、PM2 管理、PWA 支援、草稿機制。</p>
+      <span class="tag">社群</span>
+    </div>
+    <div class="card" style="border-color:var(--yellow)">
+      <div class="card-icon">🧪</div>
+      <h3>game-tester (Agent)</h3>
+      <p>遊戲自動 QA 測試員 — Playwright UI 截圖、遊戲狀態驗證、互動測試、Console 檢查、效能檢查。使用 Haiku 模型節省成本。</p>
+      <span class="tag">Agent</span>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>frontend-game-dev Skill 完整內容</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-content">
+        <div class="code-block"><span class="lang">SKILL.md</span>
+<code><span class="comment">## 架構選擇（根據規模自動判斷）</span>
+<span class="keyword">單頁 HTML 模式</span> — &lt; 2000 行，快速原型
+<span class="keyword">模組化多檔案模式</span> — &gt; 2000 行，團隊協作
+
+<span class="comment">## 手機優先</span>
+- 互動元素最小 48px、touch 事件、viewport 設定
+- 必測 375px / 414px、safe-area-inset 處理
+
+<span class="comment">## 視覺與素材</span>
+- 優先 emoji/CSS 圖形、WebP、requestAnimationFrame
+- CSS 動畫用 transform/opacity、AudioContext 預載
+
+<span class="comment">## 測試 Hook</span>
+- window.render_game_to_text() / window.advanceTime(ms)
+
+<span class="comment">## 新增規範</span>
+- <span class="keyword">無障礙</span>：色彩對比 ≥ 4.5:1、aria-label、prefers-reduced-motion
+- <span class="keyword">首次引導</span>：3 秒理解玩法、教學覆蓋層、做中學
+- <span class="keyword">離線體驗</span>：Service Worker、離線狀態提示
+- <span class="keyword">分享機制</span>：OG meta、截圖下載、分享回流
+- <span class="keyword">數據追蹤</span>：GA4 埋點、統一事件命名
+- <span class="keyword">CTA 引導</span>：自然斷點放 CTA、社群導流</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>supabase-pattern Skill 常用程式碼</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-content">
+        <div class="code-block"><span class="lang">javascript</span>
+<code><span class="comment">// 標準讀取 + fallback</span>
+<span class="keyword">async function</span> <span class="fn">loadLeaderboard</span>() {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> { data, error } = <span class="keyword">await</span> supabase
+      .from(<span class="string">'leaderboard'</span>)
+      .select(<span class="string">'name, score'</span>)
+      .order(<span class="string">'score'</span>, { ascending: <span class="keyword">false</span> })
+      .limit(10);
+    <span class="keyword">if</span> (error) <span class="keyword">throw</span> error;
+    localStorage.setItem(<span class="string">'leaderboard'</span>, JSON.stringify(data));
+    <span class="keyword">return</span> data;
+  } <span class="keyword">catch</span> (e) {
+    <span class="keyword">const</span> cached = localStorage.getItem(<span class="string">'leaderboard'</span>);
+    <span class="keyword">return</span> cached ? JSON.parse(cached) : [];
+  }
+}
+
+<span class="comment">// 標準寫入 + upsert</span>
+<span class="keyword">async function</span> <span class="fn">saveScore</span>(name, score) {
+  localStorage.setItem(<span class="string">'myScore'</span>, JSON.stringify({ name, score }));
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> supabase
+      .from(<span class="string">'leaderboard'</span>)
+      .upsert({ name, score }, { onConflict: <span class="string">'name'</span> });
+  } <span class="keyword">catch</span> (e) {
+    <span class="comment">// 靜默失敗，下次上線會同步</span>
+  }
+}</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 9. MCP -->
+<section id="mcp">
+<div class="container reveal">
+  <span class="section-label">整合</span>
+  <h2 class="section-title">MCP Server 工具整合</h2>
+  <p class="section-desc">Model Context Protocol — 讓 Claude Code 連接外部工具和資料源的標準協議</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🐙</div>
+      <h3>GitHub MCP</h3>
+      <p>PR、Issue、CI/CD 管理，直接操作 repo</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗄️</div>
+      <h3>Supabase MCP</h3>
+      <p>直接查詢/操作 Supabase，排行榜 debug</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎭</div>
+      <h3>Playwright MCP</h3>
+      <p>瀏覽器自動化測試，遊戲視覺驗證</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📁</div>
+      <h3>Filesystem MCP</h3>
+      <p>進階檔案操作，多專案管理</p>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>MCP 設定範例</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-content">
+        <div class="code-block"><span class="lang">json (.claude/settings.json)</span>
+<code>{
+  "<span class="keyword">mcpServers</span>": {
+    "<span class="string">github</span>": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<span class="comment">ghp_xxx</span>"
+      }
+    }
+  }
+}</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 10. Workflow -->
+<section id="workflow">
+<div class="container reveal">
+  <span class="section-label">流程</span>
+  <h2 class="section-title">官方推薦工作流程</h2>
+  <p class="section-desc">Explore → Plan → Implement → Verify → Commit</p>
+
+  <div class="workflow">
+    <div class="wf-step highlight">Explore</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Plan</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Implement</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Verify</div>
+    <span class="wf-arrow">→</span>
+    <div class="wf-step highlight">Commit</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <h4>Explore — 分析現狀</h4>
+      <p><code>Shift+Tab ×2</code> 進入 Plan Mode，Claude 唯讀分析程式碼和架構</p>
+    </div>
+    <div class="step">
+      <h4>Plan — 確認計畫</h4>
+      <p>Claude 產出完整計畫（需要的表、要改的元件、風險），你確認方向正確</p>
+    </div>
+    <div class="step">
+      <h4>Implement — 執行</h4>
+      <p><code>Shift+Tab</code> 回到 Edit Mode，Claude 按計畫寫程式</p>
+    </div>
+    <div class="step">
+      <h4>Verify — 驗證</h4>
+      <p>提供截圖或測試結果，Claude 自我檢查</p>
+    </div>
+    <div class="step">
+      <h4>Commit — 提交</h4>
+      <p>「commit with a descriptive message」</p>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1.1rem">Vibe Coding 核心心法</h3>
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+    <div class="card">
+      <h3>動手之前先釐清</h3>
+      <p>一次只問一個問題，能用選擇題就不用開放題，提出 2~3 個方案 + 取捨 + 推薦</p>
+    </div>
+    <div class="card">
+      <h3>計畫要夠詳細</h3>
+      <p>假設執行者什麼都不懂。每步驟 2~5 分鐘。檔案路徑寫死、指令寫死。</p>
+    </div>
+    <div class="card">
+      <h3>系統性除錯</h3>
+      <p>根因調查 → 模式分析 → 假說測試 → 實作。一次只改一個變數。修 3 次沒好 → 質疑架構。</p>
+    </div>
+    <div class="card">
+      <h3>驗證優先</h3>
+      <p>說「完成」前必須跑驗證指令。不能說「應該可以」、「我有信心」。要有證據，不是感覺。</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 11. Strategy -->
+<section id="strategy">
+<div class="container reveal">
+  <span class="section-label">加速</span>
+  <h2 class="section-title">開發更快、更好、更穩定</h2>
+  <p class="section-desc">根據官方最佳實踐 + 實戰經驗整理的具體策略</p>
+
+  <h3 style="margin-bottom:16px;font-size:1.1rem">🚀 更快：減少來回次數</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>策略</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td><strong>截圖驗證</strong></td><td>貼截圖讓 Claude 比對，比文字描述快 10 倍</td></tr>
+      <tr><td><strong>@引用檔案</strong></td><td>用 <code>@sheep-match/index.html</code> 直接引用</td></tr>
+      <tr><td><strong>Plan Mode</strong></td><td>大功能 <code>Shift+Tab ×2</code> 先規劃，省 60% 來回</td></tr>
+      <tr><td><strong>Subagent 調查</strong></td><td>「用 subagent 調查 X」保持主 context 乾淨</td></tr>
+      <tr><td><strong>多 Session</strong></td><td>不同專案開不同 terminal，避免 context 污染</td></tr>
+      <tr><td><strong>/clear 常用</strong></td><td>切任務就清，乾淨的 context 勝過長對話</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1.1rem">🎯 更好：提高一次完成率</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>策略</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td><strong>給具體 prompt</strong></td><td>❌「改好看一點」→ ✅「按鈕改圓角 12px，主色 #FF6B6B」</td></tr>
+      <tr><td><strong>指向現有 pattern</strong></td><td>「參考 sheep-match 的排行榜寫法來做 coin-catcher 的」</td></tr>
+      <tr><td><strong>先 Claude.ai 構思</strong></td><td>在 Claude.ai 先充分討論想法，再到 Claude Code 執行</td></tr>
+      <tr><td><strong>寫好驗證標準</strong></td><td>「做完後跑 Playwright 測試，截圖確認手機版正常」</td></tr>
+      <tr><td><strong>讓 Claude 訪談你</strong></td><td>「我想做 X，用 AskUserQuestion 工具訪談我」</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1.1rem">🛡️ 更穩定：減少 Bug 和回退</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>策略</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Rewind 不怕試</strong></td><td>大膽嘗試，失敗就 <code>Esc Esc</code> rewind 回去</td></tr>
+      <tr><td><strong>Checkpoint</strong></td><td>Claude 每次改動自動建立 checkpoint，隨時可回退</td></tr>
+      <tr><td><strong>Subagent Review</strong></td><td>「用 subagent review 這段 code 有沒有 edge case」</td></tr>
+      <tr><td><strong>/rename 管理</strong></td><td><code>/rename sheep-match-combo-fix</code> 方便日後找回</td></tr>
+      <tr><td><strong>--continue 續寫</strong></td><td><code>claude --continue</code> 恢復上次對話</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
+
+<!-- 12. Resources -->
+<section id="resources">
+<div class="container reveal">
+  <span class="section-label">延伸</span>
+  <h2 class="section-title">參考資源</h2>
+  <p class="section-desc">20+ 篇文章、官方文件、社群資源彙整</p>
+
+  <h3 style="margin-bottom:16px;font-size:1rem">官方文件</h3>
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+    <div class="card">
+      <h3><a href="https://code.claude.com/docs/en/best-practices" target="_blank" style="color:var(--accent2);text-decoration:none">Best Practices</a></h3>
+      <p>Claude Code 官方最佳實踐</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://code.claude.com/docs/en/common-workflows" target="_blank" style="color:var(--accent2);text-decoration:none">Common Workflows</a></h3>
+      <p>官方常見工作流程</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://code.claude.com/docs/en/hooks-guide" target="_blank" style="color:var(--accent2);text-decoration:none">Hooks Guide</a></h3>
+      <p>自動化工作流設定</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://code.claude.com/docs/en/slash-commands" target="_blank" style="color:var(--accent2);text-decoration:none">Slash Commands</a></h3>
+      <p>自訂斜線指令</p>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1rem">推薦文章</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>文章</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><a href="https://kaochenlong.com/ai-superpowers-skills" target="_blank" style="color:var(--accent2)">Superpowers 設計與取捨（高見龍）</a></td><td>Skills 完整介紹</td></tr>
+      <tr><td>2</td><td><a href="https://www.bnext.com.tw/article/90162/anthropic-guide" target="_blank" style="color:var(--accent2)">數位時代 — Anthropic 指南</a></td><td>官方團隊實戰</td></tr>
+      <tr><td>3</td><td><a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" style="color:var(--accent2)">Writing a Good CLAUDE.md</a></td><td>CLAUDE.md 寫法</td></tr>
+      <tr><td>4</td><td><a href="https://www.builder.io/blog/claude-md-guide" target="_blank" style="color:var(--accent2)">How to Write CLAUDE.md（Builder.io）</a></td><td>CLAUDE.md 指南</td></tr>
+      <tr><td>5</td><td><a href="https://arize.com/blog/claude-md-best-practices-learned-from-optimizing-claude-code-with-prompt-learning/" target="_blank" style="color:var(--accent2)">CLAUDE.md Best Practices（Arize）</a></td><td>Prompt 優化</td></tr>
+      <tr><td>6</td><td><a href="https://institute.sfeir.com/en/claude-code/claude-code-context-management/tips/" target="_blank" style="color:var(--accent2)">Context Management Tips（SFEIR）</a></td><td>Context 管理</td></tr>
+      <tr><td>7</td><td><a href="https://www.geeky-gadgets.com/claude-code-tips-2/" target="_blank" style="color:var(--accent2)">50 Claude Code Tips & Tricks</a></td><td>50 個技巧</td></tr>
+      <tr><td>8</td><td><a href="https://github.com/ykdojo/claude-code-tips" target="_blank" style="color:var(--accent2)">45 Tips for Claude Code（GitHub）</a></td><td>45 個秘訣</td></tr>
+      <tr><td>9</td><td><a href="https://cuttlesoft.com/blog/2026/02/03/claude-code-for-advanced-users/" target="_blank" style="color:var(--accent2)">Claude Code for Advanced Users</a></td><td>進階用法</td></tr>
+      <tr><td>10</td><td><a href="https://cgstrategylab.com/advanced-claude-code-vibe-coding-guide/" target="_blank" style="color:var(--accent2)">Advanced Vibe Coding Guide</a></td><td>Vibe Coding</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 style="margin:24px 0 16px;font-size:1rem">社群資源</h3>
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+    <div class="card">
+      <h3><a href="https://github.com/obra/superpowers" target="_blank" style="color:var(--accent2);text-decoration:none">obra/superpowers</a></h3>
+      <p>Superpowers 官方 repo，14 個 Skills</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" style="color:var(--accent2);text-decoration:none">awesome-claude-code</a></h3>
+      <p>Skills、Hooks、Commands 大全</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://github.com/travisvn/awesome-claude-skills" target="_blank" style="color:var(--accent2);text-decoration:none">awesome-claude-skills</a></h3>
+      <p>109+ 精選 Skills 收藏</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://github.com/trailofbits/claude-code-config" target="_blank" style="color:var(--accent2);text-decoration:none">Trail of Bits Config</a></h3>
+      <p>安全導向的設定範本</p>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<!-- Back to top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到頂部">↑</button>
+
+<!-- Offline banner -->
+<div class="offline-banner" id="offlineBanner">目前處於離線模式 — 所有內容已快取，可正常閱讀</div>
+
+<footer>
+  <div class="container">
+    <p>Claude Code 開發加速指南 — 由 <a href="https://github.com/atm301">@chia.hsun301</a> 整理</p>
+    <p style="margin-top:8px">彙整自 20+ 篇文章 + Anthropic 官方文件 + 實戰經驗</p>
+    <p style="margin-top:16px;font-size:.8rem;color:var(--text3)">
+      CC BY 4.0 授權 — 歡迎轉載與分享，請標註出處並附上原文連結。<br>
+      本站內容僅供學習參考，不代表 Anthropic 官方立場。
+    </p>
+  </div>
+</footer>
+
+<script>
+// ─── Accordion ───
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.accordion-arrow');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.accordion-arrow').forEach(a => a.style.transform = '');
+  if (!isOpen) { body.classList.add('open'); arrow.style.transform = 'rotate(180deg)'; }
+}
+
+// ─── Scroll reveal + GA4 section tracking ───
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const sec = entry.target.closest('section');
+      if (sec && sec.id && typeof trackSection === 'function') trackSection(sec.id);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => revealObserver.observe(el));
+
+// ─── Active nav ───
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// ─── Theme toggle ───
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle').textContent = next === 'light' ? '☀️' : '🌙';
+}
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').textContent = '☀️';
+  }
+})();
+
+// ─── Copy buttons on code blocks ───
+document.querySelectorAll('.code-block').forEach(block => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = '複製';
+  btn.addEventListener('click', () => {
+    const code = block.querySelector('code');
+    const text = code ? code.textContent : block.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '已複製!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '複製'; btn.classList.remove('copied'); }, 1500);
+    });
+    if (typeof gtag === 'function') gtag('event', 'copy_code', { section: block.closest('section')?.id || '' });
+  });
+  block.appendChild(btn);
+});
+
+// ─── Search ───
+const searchIndex = [];
+sections.forEach(sec => {
+  const label = sec.querySelector('.section-label')?.textContent || '';
+  const title = sec.querySelector('.section-title')?.textContent || '';
+  const desc = sec.querySelector('.section-desc')?.textContent || '';
+  const cards = [...sec.querySelectorAll('.card h3, td strong, .step h4, .accordion-header h3')].map(el => el.textContent);
+  const fullText = [title, desc, ...cards].join(' ').toLowerCase();
+  searchIndex.push({ id: sec.id, label, title, desc, cards, fullText });
+});
+
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('open');
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  input.focus();
+  renderSearchResults('');
+}
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  renderSearchResults(e.target.value.trim().toLowerCase());
+});
+
+function renderSearchResults(query) {
+  const container = document.getElementById('searchResults');
+  if (!query) { container.innerHTML = ''; return; }
+  const matches = searchIndex.filter(item => item.fullText.includes(query));
+  if (!matches.length) {
+    container.innerHTML = '<div class="search-no-result">找不到「' + query.replace(/</g,'&lt;') + '」相關內容</div>';
+    return;
+  }
+  container.innerHTML = matches.map((m, i) => {
+    const matchedCards = m.cards.filter(c => c.toLowerCase().includes(query)).slice(0, 2);
+    const hint = matchedCards.length ? matchedCards.join('、') : m.desc.slice(0, 60);
+    return `<a class="search-result${i===0?' active':''}" href="#${m.id}" onclick="closeSearch()">
+      <div class="search-result-label">${m.label}</div>
+      <div class="search-result-title">${m.title}</div>
+      <div class="search-result-desc">${hint}</div>
+    </a>`;
+  }).join('');
+}
+
+// Keyboard nav in search
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+  const results = document.querySelectorAll('.search-result');
+  const active = document.querySelector('.search-result.active');
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const idx = [...results].indexOf(active);
+    const next = e.key === 'ArrowDown' ? Math.min(idx + 1, results.length - 1) : Math.max(idx - 1, 0);
+    results.forEach(r => r.classList.remove('active'));
+    results[next]?.classList.add('active');
+    results[next]?.scrollIntoView({ block: 'nearest' });
+  }
+  if (e.key === 'Enter' && active) { active.click(); }
+});
+
+// Global keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// ─── Back to top ───
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backToTop.classList.toggle('visible', window.scrollY > 600);
+}, { passive: true });
+
+// ─── Search history ───
+const HISTORY_KEY = 'searchHistory';
+function getSearchHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; }
+}
+function saveSearchHistory(query) {
+  if (!query || query.length < 2) return;
+  let history = getSearchHistory();
+  history = history.filter(h => h !== query);
+  history.unshift(query);
+  if (history.length > 8) history = history.slice(0, 8);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+// Save on navigation
+const origCloseSearch = closeSearch;
+closeSearch = function() {
+  const input = document.getElementById('searchInput');
+  if (input.value.trim()) saveSearchHistory(input.value.trim().toLowerCase());
+  origCloseSearch();
+};
+// Show history when search opens with empty input
+function renderSearchHistory() {
+  const container = document.getElementById('searchResults');
+  const history = getSearchHistory();
+  if (!history.length) return;
+  container.innerHTML = `<div class="search-history">
+    <div class="search-history-title">最近搜尋</div>
+    <div class="search-history-list">
+      ${history.map(h => `<span class="search-history-item" onclick="document.getElementById('searchInput').value='${h}';renderSearchResults('${h}')">${h}</span>`).join('')}
+    </div>
+  </div>`;
+}
+// Patch openSearch to show history
+const origOpenSearch = openSearch;
+openSearch = function() {
+  origOpenSearch();
+  const input = document.getElementById('searchInput');
+  if (!input.value) renderSearchHistory();
+};
+
+// ─── Service Worker ───
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ─── Offline detection ───
+const offlineBanner = document.getElementById('offlineBanner');
+window.addEventListener('offline', () => offlineBanner.classList.add('show'));
+window.addEventListener('online', () => offlineBanner.classList.remove('show'));
+</script>
+</body>
+</html>
