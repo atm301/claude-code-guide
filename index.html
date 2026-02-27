@@ -245,9 +245,41 @@ footer a:hover{text-decoration:underline}
 .search-history-item{padding:4px 12px;background:var(--surface2);border:1px solid var(--surface3);border-radius:16px;font-size:.8rem;color:var(--text2);cursor:pointer;transition:all .15s}
 .search-history-item:hover{border-color:var(--accent);color:var(--accent2)}
 
+/* Reading progress bar */
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--green));z-index:200;transition:width 50ms linear;width:0}
+
+/* Font size controls */
+.font-controls{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.font-btn{width:32px;height:32px;border:1px solid var(--surface3);border-radius:6px;background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;transition:all .2s;font-family:inherit}
+.font-btn:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* Next chapter nav */
+.next-chapter{display:flex;justify-content:flex-end;margin-top:32px;padding-top:16px;border-top:1px solid var(--surface2)}
+.next-chapter a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.88rem;transition:all .2s}
+.next-chapter a:hover{border-color:var(--accent);color:var(--accent2);transform:translateX(4px)}
+
+/* Section share button */
+.section-header{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.section-header .section-title{flex:1;min-width:0}
+.share-section-btn{padding:6px 12px;background:var(--surface);border:1px solid var(--surface3);border-radius:8px;color:var(--text3);cursor:pointer;font-size:.78rem;display:inline-flex;align-items:center;gap:4px;transition:all .2s;white-space:nowrap;margin-top:4px;font-family:inherit}
+.share-section-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.share-section-btn.copied{border-color:var(--green);color:var(--green)}
+
+/* Social share bar */
+.share-bar{display:flex;gap:8px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;font-size:.85rem;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:inherit}
+.share-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.share-btn.threads{background:#000;color:#fff}
+.share-btn.x{background:#14171a;color:#fff}
+.share-btn.facebook{background:#1877f2;color:#fff}
+.share-btn.line{background:#06c755;color:#fff}
+.share-btn.copy-link{background:var(--surface2);color:var(--text2);border:1px solid var(--surface3)}
+.share-btn.copy-link:hover{border-color:var(--accent);color:var(--accent2)}
+[data-theme="light"] .share-btn.threads{background:#222;color:#fff}
+
 /* Print */
 @media print{
-  .nav-bar,.hero::before,.search-overlay,.theme-toggle,.copy-btn,.search-trigger,.back-to-top,.offline-banner{display:none}
+  .nav-bar,.hero::before,.search-overlay,.theme-toggle,.copy-btn,.search-trigger,.back-to-top,.offline-banner,.reading-progress,.font-controls,.share-bar,.share-section-btn,.next-chapter{display:none}
   body{background:#fff;color:#000}
   .card,.code-block,.accordion,.tip-box{border-color:#ddd}
 }
@@ -255,16 +287,27 @@ footer a:hover{text-decoration:underline}
 </head>
 <body>
 
+<!-- Reading progress bar -->
+<div class="reading-progress" id="readingProgress"></div>
+
 <!-- Hero -->
 <header class="hero">
   <div class="container">
     <h1>Claude Code 開發加速指南</h1>
     <p class="subtitle">從 Superpowers 安裝到工作流優化，一站學會所有技巧</p>
+    <p class="subtitle" style="font-size:clamp(.85rem,2vw,1rem);color:var(--accent2);font-weight:600;margin-top:-16px;opacity:.85">「讓 AI 寫 Code，你負責做決策。」</p>
     <div class="badge-row">
       <span class="badge"><span class="dot dot-green"></span>5 Slash Commands</span>
       <span class="badge"><span class="dot dot-purple"></span>3 Custom Skills</span>
       <span class="badge"><span class="dot dot-yellow"></span>1 Agent</span>
       <span class="badge"><span class="dot dot-blue"></span>20+ 文章彙整</span>
+    </div>
+    <div class="share-bar" style="margin-top:28px">
+      <a class="share-btn threads" href="https://www.threads.net/intent/post?text=%E6%8E%A8%E8%96%A6%E9%80%99%E7%AF%87%20Claude%20Code%20%E9%96%8B%E7%99%BC%E5%8A%A0%E9%80%9F%E6%8C%87%E5%8D%97%EF%BC%8C%E5%BE%9E%E5%85%A5%E9%96%80%E5%88%B0%E9%AB%98%E6%95%88%E4%B8%80%E7%AB%99%E5%AD%B8%E6%9C%83%20%F0%9F%9A%80%0Ahttps%3A%2F%2Fatm301.github.io%2Fclaude-code-guide%2F" target="_blank" rel="noopener">Threads</a>
+      <a class="share-btn x" href="https://twitter.com/intent/tweet?text=%E6%8E%A8%E8%96%A6%E9%80%99%E7%AF%87%20Claude%20Code%20%E9%96%8B%E7%99%BC%E5%8A%A0%E9%80%9F%E6%8C%87%E5%8D%97%20%F0%9F%9A%80&url=https%3A%2F%2Fatm301.github.io%2Fclaude-code-guide%2F" target="_blank" rel="noopener">X</a>
+      <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fatm301.github.io%2Fclaude-code-guide%2F" target="_blank" rel="noopener">Facebook</a>
+      <a class="share-btn line" href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fatm301.github.io%2Fclaude-code-guide%2F" target="_blank" rel="noopener">LINE</a>
+      <button class="share-btn copy-link" onclick="copyPageLink(this)">複製連結</button>
     </div>
   </div>
 </header>
@@ -285,6 +328,10 @@ footer a:hover{text-decoration:underline}
     <a class="nav-link" href="#workflow">工作流</a>
     <a class="nav-link" href="#strategy">加速策略</a>
     <a class="nav-link" href="#resources">資源</a>
+    <div class="font-controls">
+      <button class="font-btn" onclick="changeFontSize(-1)" aria-label="縮小字體" title="縮小字體">A-</button>
+      <button class="font-btn" onclick="changeFontSize(1)" aria-label="放大字體" title="放大字體">A+</button>
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="切換主題" title="切換亮色/暗色主題">🌙</button>
   </div>
 </nav>
@@ -307,7 +354,10 @@ footer a:hover{text-decoration:underline}
 <section id="superpowers">
 <div class="container reveal">
   <span class="section-label">入門</span>
-  <h2 class="section-title">Superpowers — AI 的員工手冊</h2>
+  <div class="section-header">
+    <h2 class="section-title">Superpowers — AI 的員工手冊</h2>
+    <button class="share-section-btn" onclick="shareSection('superpowers',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">一套給 AI 看的工作流規範（不是軟體或函式庫），包含 14 個 Skills，從需求釐清到分支合併都有對應規範。</p>
 
   <h3 style="margin-bottom:16px;font-size:1.1rem">安裝步驟</h3>
@@ -338,6 +388,7 @@ footer a:hover{text-decoration:underline}
     <strong>更新指令</strong>
     <code>/plugin update superpowers</code>
   </div>
+  <div class="next-chapter"><a href="#skills">Skills 清單 →</a></div>
 </div>
 </section>
 
@@ -345,7 +396,10 @@ footer a:hover{text-decoration:underline}
 <section id="skills">
 <div class="container reveal">
   <span class="section-label">核心</span>
-  <h2 class="section-title">14 個 Skills 完整清單</h2>
+  <div class="section-header">
+    <h2 class="section-title">14 個 Skills 完整清單</h2>
+    <button class="share-section-btn" onclick="shareSection('skills',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">依執行順序排列，星級代表推薦程度</p>
 
   <div class="table-wrap">
@@ -397,6 +451,7 @@ footer a:hover{text-decoration:underline}
       <span class="tag">大型專案</span>
     </div>
   </div>
+  <div class="next-chapter"><a href="#claudemd">CLAUDE.md 全域設定 →</a></div>
 </div>
 </section>
 
@@ -404,7 +459,10 @@ footer a:hover{text-decoration:underline}
 <section id="claudemd">
 <div class="container reveal">
   <span class="section-label">設定</span>
-  <h2 class="section-title">CLAUDE.md 全域設定</h2>
+  <div class="section-header">
+    <h2 class="section-title">CLAUDE.md 全域設定</h2>
+    <button class="share-section-btn" onclick="shareSection('claudemd',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">三層架構：全域 → 專案 → 本地，每一行都問自己「拿掉會不會讓 Claude 犯錯？」不會就刪。</p>
 
   <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
@@ -455,6 +513,7 @@ footer a:hover{text-decoration:underline}
     <strong>核心原則</strong>
     全域 CLAUDE.md 保持 < 150 行。能用工具自動化的（格式化、型別檢查）不要寫在 CLAUDE.md。
   </div>
+  <div class="next-chapter"><a href="#context">Context 管理 →</a></div>
 </div>
 </section>
 
@@ -462,7 +521,10 @@ footer a:hover{text-decoration:underline}
 <section id="context">
 <div class="container reveal">
   <span class="section-label">效率</span>
-  <h2 class="section-title">Context 管理與 Session 策略</h2>
+  <div class="section-header">
+    <h2 class="section-title">Context 管理與 Session 策略</h2>
+    <button class="share-section-btn" onclick="shareSection('context',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">200K tokens 的 context window，善用會讓開發效率翻倍。</p>
 
   <div class="table-wrap">
@@ -495,6 +557,7 @@ Terminal 3 → 測試
     <strong>避免浪費 Context</strong>
     不要貼整份 log → 只貼關鍵錯誤。讀檔指定行數 → 不要讀整份大檔。截圖驗證 → 最高 CP 值做法。
   </div>
+  <div class="next-chapter"><a href="#plan">Plan Mode →</a></div>
 </div>
 </section>
 
@@ -502,7 +565,10 @@ Terminal 3 → 測試
 <section id="plan">
 <div class="container reveal">
   <span class="section-label">架構</span>
-  <h2 class="section-title">Plan Mode 架構師模式</h2>
+  <div class="section-header">
+    <h2 class="section-title">Plan Mode 架構師模式</h2>
+    <button class="share-section-btn" onclick="shareSection('plan',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">35 分鐘的 trial-and-error → 12 分鐘的 plan-then-execute</p>
 
   <div class="table-wrap">
@@ -532,6 +598,7 @@ Terminal 3 → 測試
     <strong>什麼時候用？</strong>
     大功能一定要先 plan，小改動可以直接做。Plan Mode 消耗的 tokens 比「寫了改、改了刪」少很多。
   </div>
+  <div class="next-chapter"><a href="#hooks">Hooks 自動化 →</a></div>
 </div>
 </section>
 
@@ -539,7 +606,10 @@ Terminal 3 → 測試
 <section id="hooks">
 <div class="container reveal">
   <span class="section-label">自動化</span>
-  <h2 class="section-title">Hooks 自動化工作流</h2>
+  <div class="section-header">
+    <h2 class="section-title">Hooks 自動化工作流</h2>
+    <button class="share-section-btn" onclick="shareSection('hooks',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">在 Claude Code 特定事件發生時自動執行的腳本</p>
 
   <div class="table-wrap">
@@ -603,6 +673,7 @@ Terminal 3 → 測試
       </div>
     </div>
   </div>
+  <div class="next-chapter"><a href="#commands">Slash Commands →</a></div>
 </div>
 </section>
 
@@ -610,7 +681,10 @@ Terminal 3 → 測試
 <section id="commands">
 <div class="container reveal">
   <span class="section-label">效率</span>
-  <h2 class="section-title">自訂 Slash Commands</h2>
+  <div class="section-header">
+    <h2 class="section-title">自訂 Slash Commands</h2>
+    <button class="share-section-btn" onclick="shareSection('commands',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">在 <code>~/.claude/commands/</code> 建立 <code>.md</code> 檔案，檔名即指令名。</p>
 
   <div class="card-grid">
@@ -650,6 +724,7 @@ Terminal 3 → 測試
     <strong>使用方式</strong>
     在 Claude Code 的 <code>&gt;</code> 提示符號中輸入 <code>/catchup</code>、<code>/review</code> 等即可。支援 <code>$ARGUMENTS</code> 傳參數，如 <code>/game-test sheep-match/index.html</code>
   </div>
+  <div class="next-chapter"><a href="#custom-skills">自訂 Skills →</a></div>
 </div>
 </section>
 
@@ -657,7 +732,10 @@ Terminal 3 → 測試
 <section id="custom-skills">
 <div class="container reveal">
   <span class="section-label">專業</span>
-  <h2 class="section-title">自訂 Skills & Agent</h2>
+  <div class="section-header">
+    <h2 class="section-title">自訂 Skills & Agent</h2>
+    <button class="share-section-btn" onclick="shareSection('custom-skills',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">Skills 放在 <code>~/.claude/skills/*/SKILL.md</code>，Claude 會根據任務自動載入對應 Skill。</p>
 
   <div class="card-grid">
@@ -760,6 +838,7 @@ Terminal 3 → 測試
       </div>
     </div>
   </div>
+  <div class="next-chapter"><a href="#mcp">MCP 工具整合 →</a></div>
 </div>
 </section>
 
@@ -767,7 +846,10 @@ Terminal 3 → 測試
 <section id="mcp">
 <div class="container reveal">
   <span class="section-label">整合</span>
-  <h2 class="section-title">MCP Server 工具整合</h2>
+  <div class="section-header">
+    <h2 class="section-title">MCP Server 工具整合</h2>
+    <button class="share-section-btn" onclick="shareSection('mcp',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">Model Context Protocol — 讓 Claude Code 連接外部工具和資料源的標準協議</p>
 
   <div class="card-grid">
@@ -815,6 +897,7 @@ Terminal 3 → 測試
       </div>
     </div>
   </div>
+  <div class="next-chapter"><a href="#workflow">工作流程 →</a></div>
 </div>
 </section>
 
@@ -822,7 +905,10 @@ Terminal 3 → 測試
 <section id="workflow">
 <div class="container reveal">
   <span class="section-label">流程</span>
-  <h2 class="section-title">官方推薦工作流程</h2>
+  <div class="section-header">
+    <h2 class="section-title">官方推薦工作流程</h2>
+    <button class="share-section-btn" onclick="shareSection('workflow',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">Explore → Plan → Implement → Verify → Commit</p>
 
   <div class="workflow">
@@ -879,6 +965,7 @@ Terminal 3 → 測試
       <p>說「完成」前必須跑驗證指令。不能說「應該可以」、「我有信心」。要有證據，不是感覺。</p>
     </div>
   </div>
+  <div class="next-chapter"><a href="#strategy">加速策略 →</a></div>
 </div>
 </section>
 
@@ -886,7 +973,10 @@ Terminal 3 → 測試
 <section id="strategy">
 <div class="container reveal">
   <span class="section-label">加速</span>
-  <h2 class="section-title">開發更快、更好、更穩定</h2>
+  <div class="section-header">
+    <h2 class="section-title">開發更快、更好、更穩定</h2>
+    <button class="share-section-btn" onclick="shareSection('strategy',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">根據官方最佳實踐 + 實戰經驗整理的具體策略</p>
 
   <h3 style="margin-bottom:16px;font-size:1.1rem">🚀 更快：減少來回次數</h3>
@@ -931,6 +1021,7 @@ Terminal 3 → 測試
     </tbody>
   </table>
   </div>
+  <div class="next-chapter"><a href="#resources">參考資源 →</a></div>
 </div>
 </section>
 
@@ -938,7 +1029,10 @@ Terminal 3 → 測試
 <section id="resources">
 <div class="container reveal">
   <span class="section-label">延伸</span>
-  <h2 class="section-title">參考資源</h2>
+  <div class="section-header">
+    <h2 class="section-title">參考資源</h2>
+    <button class="share-section-btn" onclick="shareSection('resources',this)">🔗 分享</button>
+  </div>
   <p class="section-desc">20+ 篇文章、官方文件、社群資源彙整</p>
 
   <h3 style="margin-bottom:16px;font-size:1rem">官方文件</h3>
@@ -1157,11 +1251,54 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeSearch();
 });
 
+// ─── Reading progress bar ───
+const progressBar = document.getElementById('readingProgress');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = Math.min(progress, 100) + '%';
+}, { passive: true });
+
 // ─── Back to top ───
 const backToTop = document.getElementById('backToTop');
 window.addEventListener('scroll', () => {
   backToTop.classList.toggle('visible', window.scrollY > 600);
 }, { passive: true });
+
+// ─── Font size ───
+const FONT_KEY = 'fontSize';
+function changeFontSize(delta) {
+  const html = document.documentElement;
+  const current = parseFloat(getComputedStyle(html).fontSize);
+  const next = Math.max(12, Math.min(22, current + delta));
+  html.style.fontSize = next + 'px';
+  localStorage.setItem(FONT_KEY, next);
+}
+(function initFontSize() {
+  const saved = localStorage.getItem(FONT_KEY);
+  if (saved) document.documentElement.style.fontSize = saved + 'px';
+})();
+
+// ─── Share section link ───
+function shareSection(sectionId, btn) {
+  const url = window.location.origin + window.location.pathname + '#' + sectionId;
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '已複製!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '🔗 分享'; btn.classList.remove('copied'); }, 1500);
+  });
+  if (typeof gtag === 'function') gtag('event', 'share_section', { section_id: sectionId });
+}
+
+// ─── Copy page link ───
+function copyPageLink(btn) {
+  navigator.clipboard.writeText('https://atm301.github.io/claude-code-guide/').then(() => {
+    btn.textContent = '已複製!';
+    setTimeout(() => { btn.textContent = '複製連結'; }, 1500);
+  });
+  if (typeof gtag === 'function') gtag('event', 'share', { method: 'copy_link' });
+}
 
 // ─── Search history ───
 const HISTORY_KEY = 'searchHistory';
